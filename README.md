@@ -7,7 +7,7 @@ Main Features
 -------------
 
 * Uses Backbone views as controllers and event handling
-* Converts views into models automatically, while allowing you to control the process if you need to
+* Converts views into knockout viewModels automatically, while allowing you to control the process if you need to
 * Supports promises for loading data and external templates
 * Extended DOM event handling with filters and adapters
 
