@@ -1,0 +1,11 @@
+*.user
+*.suo
+*.bak
+*.~*
+*.lnk
+*.design
+*.log
+*.psess
+bin
+obj
+node_modules

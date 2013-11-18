@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Templates</title>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="lib/backbone-min.js"></script>
+    <script src="lib/knockout-min.js"></script>
+    <script src="../dist/knockbone.js"></script>
+    <script src="Templates.js"></script>
+</head>
+<body>
+    <p>
+        This sample shows how you can use templates from various sources.
+        Since templates in knockbone can return promises, you can load external files and the
+        render method will wait until the file is loaded before applying knockout bindings.
+    </p>
+
+    <div id="element-container">
+        <p>This view was loaded from <span data-bind="text: source"></span>.</p>
+    </div>
+    <div id="script-container"></div>
+    <div id="external-container"></div>
+
+    <script type="text/template" id="sample-template">
+        <p>This view was loaded from <span data-bind="text: source"></span>.</p>
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Basic</title>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="lib/backbone-min.js"></script>
+    <script src="lib/knockout-min.js"></script>
+    <script src="../dist/knockbone.js"></script>
+    <script src="Basic.js"></script>
+</head>
+<body>
+    <p>This sample shows a basic view with ko databinding and view event handling. All events are handled in the view, knockout is used only for templating.</p>
+
+    <div id="main">
+        Type and press 'Enter': <input data-bind="value: inputValue" />
+        <button>Or click here</button>
+        <div>
+            New value: <span data-bind="text: outputValue" />
+        </div>
+    </div>
+</body>
+</html>
