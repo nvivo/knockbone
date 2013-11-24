@@ -16,6 +16,12 @@
         document?: EventInfo[];
     }
 
+    interface ChildViewDefinition {
+        instance?: any;
+        container?: string;
+        view: any;
+    }
+
     // Regex to split the event name
     var delegateEventSplitter = /^(?:\((.*)\)\s*)?(\S+)\s*(.*)$/;
 
@@ -155,7 +161,7 @@
         private _createChildViews() : void {
 
             if (this.views) {
-                _.each(this.views, (def, name) => {
+                _.each(this.views, (def: ChildViewDefinition, name: string) => {
                     var view = new def.view();
 
                     def.instance = view;
@@ -172,7 +178,7 @@
 
                 var promises = [];
 
-                _.each(this.views, def => {
+                _.each(this.views, (def: ChildViewDefinition) => {
 
                     var view = def.instance;
 
@@ -243,7 +249,7 @@
 
             var keys = [];
 
-            _.each(this, (value, key) => {
+            _.each(this, (value: any, key: string) => {
                 if (key.charAt(0) !== '_' && (value instanceof Model || value instanceof Collection || ko.isObservable(value)))
                     keys.push(key);
             });
@@ -290,7 +296,7 @@
             if (parsed) {
 
                 if (parsed.direct)
-                    _.each(parsed.direct, e => this.$(e.selector).off(suffix));
+                    _.each(parsed.direct, (e: EventInfo) => this.$(e.selector).off(suffix));
 
                 if (parsed.window)
                     $(window).off(suffix);

@@ -41,9 +41,9 @@ module Knockbone {
         /** Creates a read-only observable of a collection. */
         public static observableCollection(collection: Collection) : ObservableCollection {
 
-            var _filter = ko.observable();
-            var _sort = ko.observable();
-            var _sortAsc = ko.observable();
+            var _filter = ko.observable<any>();
+            var _sort = ko.observable<any>();
+            var _sortAsc = ko.observable<any>();
 
             var observable = <ObservableCollection> ko.computed(() => {
 
@@ -69,7 +69,7 @@ module Knockbone {
                 }
 
                 // returns an array of model observables
-                return _.map(models, m => m.observable());
+                return _.map(models, (m: any) => m.observable());
             });
 
             // adds the additional methods to the computed observable
