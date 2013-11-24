@@ -31,6 +31,9 @@
     // Regex to get the event handler filters
     var actionFilterSplitter = /(\w+)(?:\s*\|\s*)?/g;
 
+    // Template Cache
+    export var TemplateCache = {};
+
     export class View extends Backbone.View {
 
         constructor(options?: Backbone.ViewOptions) {
@@ -235,10 +238,13 @@
 
             if (template) {
 
+                if (Utils.isUrl(template))
+                    return this._getTemplateFromUrl(template);
+
                 if (Utils.isPromise(template))
                     return template;
-                else
-                    return $(template).html();
+
+                return $(template).html();
             }
             
             return null;
@@ -486,6 +492,96 @@
             this.isRendered = false;
 
             this.triggerMethod(['close', 'onClose']);
+        }
+
+        /**
+            Tries to get a template from an url. The url may be optionally followed by a selector ID.
+            e.g. '/templates/file.html' or '/templates/file.html#selector-id'
+        */
+        private _getTemplateFromUrl(url: string): any {
+
+            // finds the selector in the url
+            var selector: string;
+            var pos = url.indexOf('#');
+
+            if (pos > 0) {
+                selector = url.substring(pos);
+                url = url.substring(0, pos);
+            }
+
+            // helper fn to return the template from the container
+            var getHtmlTemplate = (container: JQuery, selector: string) => {
+                if (selector)
+                    return container.find(selector).first().html();
+                else
+                    return container.html();
+            }
+
+            // tries to get the template from the cache
+            var cache = TemplateCache;
+            var key = url.toLowerCase();
+            var cacheItem = cache[key];
+
+            // if the cacheItem is a jQuery element, it was already loaded so we return the template
+            if (cacheItem instanceof jQuery) {
+                return getHtmlTemplate(cacheItem, selector);
+            }
+            // if it is a promise, it means 'someone else' already requested it, so it returns a promise to the template
+            else if (Utils.isPromise(cacheItem)) {
+                var def = $.Deferred();
+
+                cacheItem
+                    .done((container: JQuery) => {
+                        def.resolve(getHtmlTemplate(container, selector));
+                    })
+                    .fail(() => def.reject.apply(def, arguments));
+
+                return def.promise();
+
+            }
+            // if its neither, make a request and create a promise to the template container
+            else {
+                // creates a promise for the cache
+                var cacheDef = $.Deferred();
+
+                // creates a promise to return
+                var returnDef = $.Deferred();
+
+                cacheItem = cache[key] = cacheDef.promise();
+
+                $.get(url)
+                    .done((content: string) => {
+
+                        // parses the template content
+                        var nodes = $.parseHTML(content.trim());
+                        var container: JQuery;
+
+                        // if there is only one element, make it the container
+                        if (nodes.length == 1) {
+                            container = $(nodes[0]);
+                        }
+                        // otherwise we create an empty container and append the elements to it
+                        else {
+                            container = $("<div>");
+                            container.append(nodes);
+                        }
+
+                        // replaces the promise in the cache with the container
+                        cache[key] = container;
+
+                        // resolves the return promise
+                        returnDef.resolve(() => getHtmlTemplate(container, selector));
+
+                        // resolves the promise with the container
+                        cacheDef.resolve(container);
+                    })
+                    .fail(() => {
+                        returnDef.reject.apply(returnDef, arguments);
+                        cacheDef.reject.apply(cacheDef, arguments);
+                    });
+
+                return returnDef.promise();
+            }
         }
 
         /**
