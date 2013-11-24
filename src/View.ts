@@ -218,7 +218,7 @@
         */
         getTemplate(template?: any): any {
 
-            if (arguments.length === 0)
+            if (!template)
                 template = _.result(this, "template");
 
             if (template) {
