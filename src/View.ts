@@ -33,8 +33,12 @@
 
     export class View extends Backbone.View {
 
-        constructor(options?) {
+        constructor(options?: Backbone.ViewOptions) {
             super(options);
+
+            if (options.el)
+                this._ownsElement = true;
+
             this._allowDelegateEvents = true;
         }
 
@@ -80,10 +84,11 @@
         */
         views: any;
 
-
         /** The template to be used with the view, if any. Can be a string, a selector or a promise to a string.*/
         template: any;
 
+        private _usedTemplate: boolean;
+        private _ownsElement: boolean;
 
         triggerMethod: typeof Knockbone.triggerMethod;
 
@@ -119,8 +124,10 @@
 
                     this.triggerMethod(['beforeRenderTemplate', 'onBeforeRenderTemplate']);
 
-                    if (template)
+                    if (template) {
                         this.$el.html(template);
+                        this._usedTemplate = true;
+                    }
 
                     this.triggerMethod(['renderTemplate', 'onRenderTemplate']);
 
@@ -224,8 +231,7 @@
         */
         getTemplate(template?: any): any {
 
-            if (!template)
-                template = _.result(this, "template");
+            template = template || _.result(this, "template");
 
             if (template) {
 
@@ -460,6 +466,26 @@
             }
 
             return null;
+        }
+
+        /** Closes the view, unbind events and clear unattached DOM nodes, leaving it ready for disposal. */
+        close() {
+            this.triggerMethod(['beforeClose', 'onBeforeClose']);
+
+            this.undelegateEvents();
+            ko.cleanNode(this.el);
+
+            if (this._ownsElement)
+                this.remove();
+            else
+                this.stopListening();
+
+            if (this._usedTemplate)
+                this.$el.empty();
+
+            this.isRendered = false;
+
+            this.triggerMethod(['close', 'onClose']);
         }
 
         /**
