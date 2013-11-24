@@ -39,7 +39,7 @@
         constructor(options?: Backbone.ViewOptions) {
             super(options);
 
-            if (options.el)
+            if (options && options.el)
                 this._ownsElement = true;
 
             this._allowDelegateEvents = true;
