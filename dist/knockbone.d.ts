@@ -9,6 +9,7 @@ declare module Knockbone {
     class Utils {
         static isPromise(arg): boolean;
         static when(arg, callback);
+        static isUrl(arg: string): boolean;
     }
 }
 declare module Knockbone {
@@ -24,11 +25,14 @@ declare module Knockbone {
     }
 }
 declare module Knockbone {
+    var TemplateCache: {};
     class View extends Backbone.View {
-        constructor(options?);
+        constructor(options?: Backbone.ViewOptions);
         public events: any;
         public views: any;
         public template: any;
+        private _usedTemplate;
+        private _ownsElement;
         public triggerMethod: {
             (arr: string[], ...args: any[]): any;
             (eventName: string, ...args: any[]): any;
@@ -43,12 +47,15 @@ declare module Knockbone {
         public getTemplate(template?: any): any;
         public getViewModel(): any;
         public createViewModel(keys: string[], context?: any): any;
+        public getEventDelegationElement(): JQuery;
         public undelegateEvents(parsed?): void;
         public delegateEvents(events?): View;
         private _delegateEvents(events, target, useSelector?);
         private _applyFilters(filterNames, method, methodName);
         private _parseEvents(events);
         private _parseFilters(filter);
+        public close(): void;
+        private _getTemplateFromUrl(url);
         static adapters: {
             "value": (method: any) => (e: any) => any;
             "ko": (method: any) => (e: any) => any;

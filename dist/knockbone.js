@@ -1,6 +1,6 @@
 var Knockbone;
 (function (Knockbone) {
-    Knockbone.Version = '0.2.0';
+    Knockbone.Version = '0.3.0';
 })(Knockbone || (Knockbone = {}));
 var Knockbone;
 (function (Knockbone) {
@@ -48,6 +48,10 @@ var Knockbone;
                 return arg.then(callback);
 else
                 return callback(arg);
+        };
+
+        Utils.isUrl = function (arg) {
+            return (arg && _.isString(arg) && (arg.charAt(0) === '/' || arg.indexOf('http') === 0));
         };
         return Utils;
     })();
@@ -152,12 +156,18 @@ var Knockbone;
 
     var actionFilterSplitter = /(\w+)(?:\s*\|\s*)?/g;
 
+    Knockbone.TemplateCache = {};
+
     var View = (function (_super) {
         __extends(View, _super);
         function View(options) {
             _super.call(this, options);
             this.isRendered = false;
             this._allowDelegateEvents = false;
+
+            if (options && options.el)
+                this._ownsElement = true;
+
             this._allowDelegateEvents = true;
         }
         View.prototype.render = function () {
@@ -183,8 +193,10 @@ var Knockbone;
                 Knockbone.Utils.when(template, function (template) {
                     _this.triggerMethod(['beforeRenderTemplate', 'onBeforeRenderTemplate']);
 
-                    if (template)
+                    if (template) {
                         _this.$el.html(template);
+                        _this._usedTemplate = true;
+                    }
 
                     _this.triggerMethod(['renderTemplate', 'onRenderTemplate']);
 
@@ -278,14 +290,16 @@ else
         };
 
         View.prototype.getTemplate = function (template) {
-            if (arguments.length === 0)
-                template = _.result(this, "template");
+            template = template || _.result(this, "template");
 
             if (template) {
+                if (Knockbone.Utils.isUrl(template))
+                    return this._getTemplateFromUrl(template);
+
                 if (Knockbone.Utils.isPromise(template))
                     return template;
-else
-                    return $(template).html();
+
+                return $(template).html();
             }
 
             return null;
@@ -325,11 +339,17 @@ else
             return model;
         };
 
+        View.prototype.getEventDelegationElement = function () {
+            return this.$el;
+        };
+
         View.prototype.undelegateEvents = function (parsed) {
             var _this = this;
             var suffix = '.delegateEvents' + this.cid;
 
-            this.$el.off(suffix);
+            var $el = this.getEventDelegationElement();
+
+            $el.off(suffix);
 
             if (parsed) {
                 if (parsed.direct)
@@ -356,7 +376,7 @@ else
             this.undelegateEvents(parsed);
 
             if (parsed.el)
-                this._delegateEvents(parsed.el, this.$el);
+                this._delegateEvents(parsed.el, this.getEventDelegationElement());
 
             if (parsed.direct)
                 _.each(parsed.direct, function (eventInfo) {
@@ -481,6 +501,91 @@ else
             }
 
             return null;
+        };
+
+        View.prototype.close = function () {
+            this.triggerMethod(['beforeClose', 'onBeforeClose']);
+
+            this.undelegateEvents();
+            ko.cleanNode(this.el);
+
+            if (this._ownsElement)
+                this.remove();
+else
+                this.stopListening();
+
+            if (this._usedTemplate)
+                this.$el.empty();
+
+            this.isRendered = false;
+
+            this.triggerMethod(['close', 'onClose']);
+        };
+
+        View.prototype._getTemplateFromUrl = function (url) {
+            var selector;
+            var pos = url.indexOf('#');
+
+            if (pos > 0) {
+                selector = url.substring(pos);
+                url = url.substring(0, pos);
+            }
+
+            var getHtmlTemplate = function (container, selector) {
+                if (selector)
+                    return container.find(selector).first().html();
+else
+                    return container.html();
+            };
+
+            var cache = Knockbone.TemplateCache;
+            var key = url.toLowerCase();
+            var cacheItem = cache[key];
+
+            if (cacheItem instanceof jQuery) {
+                return getHtmlTemplate(cacheItem, selector);
+            } else if (Knockbone.Utils.isPromise(cacheItem)) {
+                var def = $.Deferred();
+
+                cacheItem.done(function (container) {
+                    def.resolve(getHtmlTemplate(container, selector));
+                }).fail(function () {
+                    return def.reject.apply(def, arguments);
+                });
+
+                return def.promise();
+            } else {
+                var cacheDef = $.Deferred();
+
+                var returnDef = $.Deferred();
+
+                cacheItem = cache[key] = cacheDef.promise();
+
+                $.get(url).done(function (content) {
+                    var nodes = $.parseHTML(content.trim());
+                    var container;
+
+                    if (nodes.length == 1) {
+                        container = $(nodes[0]);
+                    } else {
+                        container = $("<div>");
+                        container.append(nodes);
+                    }
+
+                    cache[key] = container;
+
+                    returnDef.resolve(function () {
+                        return getHtmlTemplate(container, selector);
+                    });
+
+                    cacheDef.resolve(container);
+                }).fail(function () {
+                    returnDef.reject.apply(returnDef, arguments);
+                    cacheDef.reject.apply(cacheDef, arguments);
+                });
+
+                return returnDef.promise();
+            }
         };
 
         View.adapters = {
