@@ -298,12 +298,19 @@
             return model;
         }
 
+        /** Returns the view element to delegate events to (defaults to this.$el). */
+        getEventDelegationElement(): JQuery {
+            return this.$el;
+        }
+
         /** Clears all callbacks previously bound with delegateEvents. */
         undelegateEvents(parsed?): void {
 
             var suffix = '.delegateEvents' + this.cid;
 
-            this.$el.off(suffix);
+            var $el = this.getEventDelegationElement();
+
+            $el.off(suffix);
 
             if (parsed) {
 
@@ -330,7 +337,7 @@
             this.undelegateEvents(parsed);
 
             if (parsed.el)
-                this._delegateEvents(parsed.el, this.$el);
+                this._delegateEvents(parsed.el, this.getEventDelegationElement());
 
             if (parsed.direct)
                 _.each(parsed.direct, eventInfo => this._delegateEvents([eventInfo], this.$(eventInfo.selector), false));
