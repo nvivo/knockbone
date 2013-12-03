@@ -561,17 +561,7 @@
 
                         // parses the template content
                         var nodes = $.parseHTML(content.trim());
-                        var container: JQuery;
-
-                        // if there is only one element, make it the container
-                        if (nodes.length == 1) {
-                            container = $(nodes[0]);
-                        }
-                        // otherwise we create an empty container and append the elements to it
-                        else {
-                            container = $("<div>");
-                            container.append(nodes);
-                        }
+                        var container = $("<div>").append(nodes);
 
                         // replaces the promise in the cache with the container
                         cache[key] = container;
