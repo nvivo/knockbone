@@ -136,7 +136,7 @@ var KnockboneSamples;
             function Todo(attributes, options) {
                 var _this = this;
                 _super.call(this, attributes, options);
-                this.localStorage = new (Backbone).LocalStorage("TodoCollection");
+                this.localStorage = new Backbone.LocalStorage("TodoCollection");
 
                 // saves the model on toggle
                 this.on('change:completed', function () {
@@ -151,8 +151,8 @@ var KnockboneSamples;
             };
 
             Object.defineProperty(Todo.prototype, "title", {
-                get: // getters and setters are optional, but they make it easier to work with models
-                function () {
+                // getters and setters are optional, but they make it easier to work with models
+                get: function () {
                     return this.get('title');
                 },
                 set: function (value) {
@@ -183,7 +183,7 @@ var KnockboneSamples;
             function TodoCollection() {
                 _super.apply(this, arguments);
                 this.model = Todo;
-                this.localStorage = new (Backbone).LocalStorage("TodoCollection");
+                this.localStorage = new Backbone.LocalStorage("TodoCollection");
             }
             return TodoCollection;
         })(Knockbone.Collection);

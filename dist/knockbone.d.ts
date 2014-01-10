@@ -2,13 +2,13 @@ declare module Knockbone {
     var Version: string;
 }
 declare module Knockbone {
-    function triggerMethod(arr: string[], ...args): any;
-    function triggerMethod(eventName: string, ...args): any;
+    function triggerMethod(arr: string[], ...args: any[]): any;
+    function triggerMethod(eventName: string, ...args: any[]): any;
 }
 declare module Knockbone {
     class Utils {
-        static isPromise(arg): boolean;
-        static when(arg, callback);
+        static isPromise(arg: any): boolean;
+        static when(arg: any, callback: any): any;
         static isUrl(arg: string): boolean;
     }
 }
@@ -20,7 +20,7 @@ declare module Knockbone {
         filter(filterFn: (model: Knockbone.Model) => boolean): void;
     }
     class KoMapping {
-        static observableModel(model: Knockbone.Model);
+        static observableModel(model: Knockbone.Model): any;
         static observableCollection(collection: Knockbone.Collection): ObservableCollection;
     }
 }
@@ -33,10 +33,7 @@ declare module Knockbone {
         public template: any;
         private _usedTemplate;
         private _ownsElement;
-        public triggerMethod: {
-            (arr: string[], ...args: any[]): any;
-            (eventName: string, ...args: any[]): any;
-        };
+        public triggerMethod: typeof Knockbone.triggerMethod;
         public isRendered: boolean;
         private _allowDelegateEvents;
         public render(): View;
@@ -48,8 +45,8 @@ declare module Knockbone {
         public getViewModel(): any;
         public createViewModel(keys: string[], context?: any): any;
         public getEventDelegationElement(): JQuery;
-        public undelegateEvents(parsed?): void;
-        public delegateEvents(events?): View;
+        public undelegateEvents(parsed?: any): void;
+        public delegateEvents(events?: any): View;
         private _delegateEvents(events, target, useSelector?);
         private _applyFilters(filterNames, method, methodName);
         private _parseEvents(events);
@@ -98,10 +95,10 @@ declare module Knockbone {
     class Service {
         public urlRoot: any;
         public ajaxSettings: JQueryAjaxSettings;
-        public get(url: string, data?, options?: JQueryAjaxSettings): JQueryXHR;
-        public post(url: string, data, options?: JQueryAjaxSettings): JQueryXHR;
-        public put(url: string, data, options?: JQueryAjaxSettings): JQueryXHR;
-        public delete(url: string, data?, options?: JQueryAjaxSettings): JQueryXHR;
+        public get(url: string, data?: any, options?: JQueryAjaxSettings): JQueryXHR;
+        public post(url: string, data: any, options?: JQueryAjaxSettings): JQueryXHR;
+        public put(url: string, data: any, options?: JQueryAjaxSettings): JQueryXHR;
+        public delete(url: string, data?: any, options?: JQueryAjaxSettings): JQueryXHR;
         public upload(url: string, data: FormData, options?: JQueryAjaxSettings): JQueryPromise<any>;
         public ajax(method: string, url: string, data: any, options: JQueryAjaxSettings): JQueryXHR;
     }

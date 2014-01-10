@@ -1,4 +1,4 @@
-var Knockbone;
+﻿var Knockbone;
 (function (Knockbone) {
     Knockbone.Version = '0.3.0';
 })(Knockbone || (Knockbone = {}));
@@ -9,6 +9,8 @@ var Knockbone;
     function getEventName(match, prefix, eventName) {
         return eventName.toUpperCase();
     }
+
+    
 
     function triggerMethod(event) {
         var args = [];
@@ -46,7 +48,7 @@ var Knockbone;
         Utils.when = function (arg, callback) {
             if (Utils.isPromise(arg))
                 return arg.then(callback);
-else
+            else
                 return callback(arg);
         };
 
@@ -107,7 +109,7 @@ var Knockbone;
 
                 if (filter)
                     models = collection.filter(filter);
-else
+                else
                     models = collection.models.slice(0);
 
                 if (sort) {
@@ -281,7 +283,7 @@ var Knockbone;
                 var checkDOM = function () {
                     if ($.contains(docElement, el))
                         _this.triggerMethod(['dominsert', methodName]);
-else
+                    else
                         setTimeout(checkDOM, 10);
                 };
 
@@ -326,11 +328,11 @@ else
 
                 if (ko.isObservable(value))
                     mappedValue = value;
-else if (value instanceof Knockbone.Model || value instanceof Knockbone.Collection)
+                else if (value instanceof Knockbone.Model || value instanceof Knockbone.Collection)
                     mappedValue = value.observable();
-else if (_.isFunction(value))
+                else if (_.isFunction(value))
                     mappedValue = _.bind(value, context);
-else
+                else
                     mappedValue = value;
 
                 model[key] = mappedValue;
@@ -413,7 +415,7 @@ else
 
                         if (adapter)
                             method = adapter(method, event.methodName);
-else
+                        else
                             throw new Error("Invalid adapter: " + event.adapter);
                     }
 
@@ -422,7 +424,7 @@ else
 
                     if (useSelector === false)
                         target.on(event.eventName + suffix, method);
-else
+                    else
                         target.on(event.eventName + suffix, event.selector, method);
                 }
             }
@@ -511,7 +513,7 @@ else
 
             if (this._ownsElement)
                 this.remove();
-else
+            else
                 this.stopListening();
 
             if (this._usedTemplate)
@@ -534,7 +536,7 @@ else
             var getHtmlTemplate = function (container, selector) {
                 if (selector)
                     return container.find(selector).first().html();
-else
+                else
                     return container.html();
             };
 
@@ -563,14 +565,7 @@ else
 
                 $.get(url).done(function (content) {
                     var nodes = $.parseHTML(content.trim());
-                    var container;
-
-                    if (nodes.length == 1) {
-                        container = $(nodes[0]);
-                    } else {
-                        container = $("<div>");
-                        container.append(nodes);
-                    }
+                    var container = $("<div>").append(nodes);
 
                     cache[key] = container;
 
