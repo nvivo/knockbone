@@ -10,7 +10,7 @@
 declare module Backbone {
 
     interface AddOptions extends Silenceable {
-        at: number;
+        at?: number;
     }
 
     interface HistoryOptions extends Silenceable {
@@ -19,7 +19,7 @@ declare module Backbone {
     }
 
     interface NavigateOptions {
-        trigger: boolean;
+        trigger?: boolean;
     }
 
     interface RouterOptions {
@@ -120,7 +120,7 @@ declare module Backbone {
         has(attribute: string): boolean;
         hasChanged(attribute?: string): boolean;
         isNew(): boolean;
-        isValid(): boolean;
+        isValid(options?:any): boolean;
         previous(attribute: string): any;
         previousAttributes(): any[];
         save(attributes?: any, options?: ModelSaveOptions): any;
@@ -157,8 +157,10 @@ declare module Backbone {
         comparator(element: Model): any;
         comparator(compare: Model, to?: Model): any;
 
-        add(model: Model, options?: AddOptions);
-        add(models: Model[], options?: AddOptions);
+        add(model: Model, options?: AddOptions): Collection;
+        add(model: any, options?: AddOptions): Collection;
+        add(models: Model[], options?: AddOptions): Collection;
+        add(models: any[], options?: AddOptions): Collection;
         at(index: number): Model;
         get(id: any): Model;
         create(attributes: any, options?: ModelSaveOptions): Model;
@@ -168,6 +170,7 @@ declare module Backbone {
         remove(model: Model, options?: Silenceable): Model;
         remove(models: Model[], options?: Silenceable): Model[];
         reset(models?: Model[], options?: Silenceable): Model[];
+        reset(models?: any[], options?: Silenceable): Model[];
         shift(options?: Silenceable): Model;
         sort(options?: Silenceable): Collection;
         unshift(model: Model, options?: AddOptions): Model;
@@ -319,7 +322,7 @@ declare module Backbone {
         remove(): View;
         make(tagName: any, attributes?: any, content?: any): any;
         delegateEvents(events?: any): any;
-        undelegateEvents();
+        undelegateEvents(): any;
 
         _ensureElement(): void;
     }
@@ -333,5 +336,5 @@ declare module Backbone {
     function noConflict(): typeof Backbone;
     function setDomLibrary(jQueryNew: any): any;
 	
-	var $: JQueryStatic;
+    var $: JQueryStatic;
 }
