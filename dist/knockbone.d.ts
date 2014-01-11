@@ -89,6 +89,8 @@ declare module Knockbone {
     class Model extends Backbone.Model {
         private _observable;
         public observable(): any;
+        public destroy(options?: Backbone.ModelDestroyOptions): JQueryPromise<any>;
+        public save(attributes?: any, options?: Backbone.ModelSaveOptions): JQueryPromise<any>;
     }
 }
 declare module Knockbone {

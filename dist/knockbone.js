@@ -1,6 +1,6 @@
 ﻿var Knockbone;
 (function (Knockbone) {
-    Knockbone.Version = '0.3.0';
+    Knockbone.Version = '0.3.2';
 })(Knockbone || (Knockbone = {}));
 var Knockbone;
 (function (Knockbone) {
@@ -747,6 +747,24 @@ var Knockbone;
                 this._observable = Knockbone.KoMapping.observableModel(this);
 
             return this._observable;
+        };
+
+        Model.prototype.destroy = function (options) {
+            var result = _super.prototype.destroy.call(this, options);
+
+            if (result === false)
+                return $.Deferred().resolve({ wasNew: true }).promise();
+            else
+                return result;
+        };
+
+        Model.prototype.save = function (attributes, options) {
+            var result = _super.prototype.save.call(this, attributes, options);
+
+            if (result === false)
+                return $.Deferred().reject({ validationFailed: true }).promise();
+            else
+                return result;
         };
         return Model;
     })(Backbone.Model);
