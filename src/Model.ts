@@ -11,5 +11,27 @@ module Knockbone {
 
             return this._observable;
         }
+
+        destroy(options?: Backbone.ModelDestroyOptions): JQueryPromise<any> {
+
+            var result = super.destroy(options);
+
+            // normalizes the return, so it always returns a promise
+            if (result === false)
+                return $.Deferred().resolve({ wasNew: true }).promise();
+            else
+                return result;
+        }
+
+        save(attributes?: any, options?: Backbone.ModelSaveOptions): JQueryPromise<any> {
+
+            var result = super.save(attributes, options);
+
+            // normalizes the return, so it always returns a promise
+            if (result === false)
+                return $.Deferred().reject({ validationFailed: true }).promise();
+            else
+                return result;
+        }
     }
 }
