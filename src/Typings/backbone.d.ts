@@ -5,8 +5,6 @@
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
 
-/// <reference path="jquery.d.ts" />
-
 declare module Backbone {
 
     interface AddOptions extends Silenceable {
@@ -175,6 +173,7 @@ declare module Backbone {
         sort(options?: Silenceable): Collection;
         unshift(model: Model, options?: AddOptions): Model;
         where(properies: any): Model[];
+        findWhere(properties: any): Model;
 
         _prepareModel(attrs?: any, options?: any): any;
         _removeReference(model: Model): void;
@@ -337,4 +336,8 @@ declare module Backbone {
     function setDomLibrary(jQueryNew: any): any;
 	
     var $: JQueryStatic;
+}
+
+declare module "backbone" {
+    export = Backbone;
 }
