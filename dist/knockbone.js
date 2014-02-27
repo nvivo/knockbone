@@ -665,14 +665,25 @@ var Knockbone;
 
         Application.prototype.renderView = function (view, container) {
             if (!(view instanceof Knockbone.View))
-                return;
+                throw new Error("View is not an instance of Knockbone.View.");
 
             container = this._resolveContainer(container);
 
-            if (!view.isRendered)
-                view.render();
+            var def = $.Deferred();
 
-            container.html(view.el);
+            if (!view.isRendered) {
+                view.renderAsync().done(function () {
+                    def.resolve();
+                });
+            } else {
+                def.resolve();
+            }
+
+            def.done(function () {
+                return container.html(view.el);
+            });
+
+            return def.promise();
         };
 
         Application.prototype.renderTemplate = function (template, container) {

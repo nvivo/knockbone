@@ -47,17 +47,25 @@ module Knockbone {
         /**
         * Renders a view in the specified container, or in the application's element if no container is specified.
         */
-        renderView(view: View, container?: any): void {
+        renderView(view: View, container?: any): JQueryPromise<any> {
 
             if (!(view instanceof View))
-                return;
+                throw new Error("View is not an instance of Knockbone.View.");
 
             container = this._resolveContainer(container);
 
-            if (!view.isRendered)
-                view.render();
+            var def = $.Deferred();
 
-            container.html(view.el);
+            if (view.isRendered)
+                def.resolve();
+            else
+                view.renderAsync()
+                    .done(() => def.resolve())
+                    .fail(() => def.reject());
+
+            def.done(() => container.html(view.el));
+
+            return def.promise();
         }
 
         /**

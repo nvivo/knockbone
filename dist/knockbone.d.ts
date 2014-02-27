@@ -14,14 +14,14 @@ declare module Knockbone {
 }
 declare module Knockbone {
     interface ObservableCollection extends KnockoutComputed<any[]> {
-        collection(): Knockbone.Collection;
-        sort(sortFn: (model: Knockbone.Model) => any): void;
-        sort(sortFn: (model: Knockbone.Model) => any, ascending: boolean): void;
-        filter(filterFn: (model: Knockbone.Model) => boolean): void;
+        collection(): Collection;
+        sort(sortFn: (model: Model) => any): void;
+        sort(sortFn: (model: Model) => any, ascending: boolean): void;
+        filter(filterFn: (model: Model) => boolean): void;
     }
     class KoMapping {
-        static observableModel(model: Knockbone.Model): any;
-        static observableCollection(collection: Knockbone.Collection): ObservableCollection;
+        static observableModel(model: Model): any;
+        static observableCollection(collection: Collection): ObservableCollection;
     }
 }
 declare module Knockbone {
@@ -33,7 +33,7 @@ declare module Knockbone {
         public template: any;
         private _usedTemplate;
         private _ownsElement;
-        public triggerMethod: typeof Knockbone.triggerMethod;
+        public triggerMethod: typeof triggerMethod;
         public isRendered: boolean;
         private _allowDelegateEvents;
         public render(): View;
@@ -66,12 +66,12 @@ declare module Knockbone {
     }
 }
 declare module Knockbone {
-    class Application extends Knockbone.View {
+    class Application extends View {
         public routes: any;
         public router: Backbone.Router;
         public start(): void;
         private _createRouter();
-        public renderView(view: Knockbone.View, container?: any): void;
+        public renderView(view: View, container?: any): JQueryPromise<any>;
         public renderTemplate(template: any, container?: any): void;
         private _resolveContainer(container?);
     }
@@ -82,7 +82,7 @@ declare module Knockbone {
         private _observable;
         public urlRoot: any;
         public tracker : KnockoutObservable<any>;
-        public observable(): Knockbone.ObservableCollection;
+        public observable(): ObservableCollection;
     }
 }
 declare module Knockbone {
