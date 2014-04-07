@@ -106,7 +106,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES3</TypeScriptTarget>
     <!--<TypeScriptIncludeComments>true</TypeScriptIncludeComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>-->
   </PropertyGroup>

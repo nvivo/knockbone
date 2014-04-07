@@ -48,12 +48,14 @@ module Knockbone {
         }
 
         /** Performs a 'DELETE' passing the data as JSON encoded form data */
-        delete(url: string, data?, options?: JQueryAjaxSettings) {
+        _delete(url: string, data?, options?: JQueryAjaxSettings) {
             if ((options && options.processData) !== false)
                 data = JSON.stringify(data);
 
             return this.ajax('delete', url, data, options);
         }
+
+        delete: (url: string, data?, options?: JQueryAjaxSettings) => JQueryXHR;
 
         /** Provides a standard method for uploading data through XHR POST with support for "progress" event. */
         upload(url: string, data: FormData, options?: JQueryAjaxSettings): JQueryPromise<any> {
@@ -98,6 +100,9 @@ module Knockbone {
             return $.ajax(url, settings);
         }
     }
+
+    // IE workaround
+    Service.prototype['delete'] = Service.prototype._delete;
 
     Service.prototype.ajaxSettings = {
         contentType: "application/json; charset=utf-8",

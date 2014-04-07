@@ -48,7 +48,7 @@ module Knockbone {
             var observable = <ObservableCollection> ko.computed(() => {
 
                 // tracks any change in the collection
-                collection.tracker();
+                collection.getTracker()();
 
                 var filter = _filter();
                 var sort = _sort();

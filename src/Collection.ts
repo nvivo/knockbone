@@ -2,7 +2,7 @@ module Knockbone {
 
     export class Collection extends Backbone.Collection {
 
-        private _tracker;
+        private _tracker: KnockoutObservable<any>;
         private _observable;
         urlRoot: any;
 
@@ -10,10 +10,10 @@ module Knockbone {
         * A tracker observable that is notified if anything changes in the collection.
         * Can be used to track the collection inside computed observables.
         */
-        get tracker() : KnockoutObservable<any> {
+        getTracker() : KnockoutObservable<any> {
             if (!this._tracker) {
                 this._tracker = ko.observable();
-                this.on('all', eventName => { this.tracker.notifySubscribers(null); });
+                this.on('all', eventName => { this._tracker.notifySubscribers(null); });
             }
 
             return this._tracker;

@@ -81,7 +81,7 @@ declare module Knockbone {
         private _tracker;
         private _observable;
         public urlRoot: any;
-        public tracker : KnockoutObservable<any>;
+        public getTracker(): KnockoutObservable<any>;
         public observable(): ObservableCollection;
     }
 }
@@ -100,7 +100,8 @@ declare module Knockbone {
         public get(url: string, data?: any, options?: JQueryAjaxSettings): JQueryXHR;
         public post(url: string, data: any, options?: JQueryAjaxSettings): JQueryXHR;
         public put(url: string, data: any, options?: JQueryAjaxSettings): JQueryXHR;
-        public delete(url: string, data?: any, options?: JQueryAjaxSettings): JQueryXHR;
+        public _delete(url: string, data?: any, options?: JQueryAjaxSettings): JQueryXHR;
+        public delete: (url: string, data?: any, options?: JQueryAjaxSettings) => JQueryXHR;
         public upload(url: string, data: FormData, options?: JQueryAjaxSettings): JQueryPromise<any>;
         public ajax(method: string, url: string, data: any, options: JQueryAjaxSettings): JQueryXHR;
     }

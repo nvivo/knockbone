@@ -6,7 +6,7 @@
   "author": "Natan Vivo",
   "license": "Apache2",
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-typescript": "~0.2.4"
+    "grunt": "latest",
+    "grunt-typescript": "latest"
   }
 }

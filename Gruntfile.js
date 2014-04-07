@@ -19,8 +19,8 @@ module.exports = function(grunt) {
 			],
         dest: 'Dist/knockbone.js',
         options: {
-          target: 'es5',
-          sourcemap: true,
+          target: 'es3',
+          sourceMap: true,
           fullSourceMapPath: false,
           declaration: true,
         }

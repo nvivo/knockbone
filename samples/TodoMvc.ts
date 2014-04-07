@@ -39,12 +39,12 @@ module KnockboneSamples.TodoMvc {
         filterKey = ko.observable();
 
         todoCount = ko.computed(() => {
-            this.todos.tracker();
+            this.todos.getTracker()();
             return this.todos.length;
         });
 
         todosCompleted = ko.computed(() => {
-            this.todos.tracker();
+            this.todos.getTracker()();
             return this.todos.filter((m: Todo) => m.completed).length;
         });
 

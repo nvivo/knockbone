@@ -99,7 +99,7 @@ var Knockbone;
             var _sortAsc = ko.observable();
 
             var observable = ko.computed(function () {
-                collection.tracker();
+                collection.getTracker()();
 
                 var filter = _filter();
                 var sort = _sort();
@@ -671,13 +671,14 @@ var Knockbone;
 
             var def = $.Deferred();
 
-            if (!view.isRendered) {
-                view.renderAsync().done(function () {
-                    def.resolve();
-                });
-            } else {
+            if (view.isRendered)
                 def.resolve();
-            }
+            else
+                view.renderAsync().done(function () {
+                    return def.resolve();
+                }).fail(function () {
+                    return def.reject();
+                });
 
             def.done(function () {
                 return container.html(view.el);
@@ -716,21 +717,17 @@ var Knockbone;
         function Collection() {
             _super.apply(this, arguments);
         }
-        Object.defineProperty(Collection.prototype, "tracker", {
-            get: function () {
-                var _this = this;
-                if (!this._tracker) {
-                    this._tracker = ko.observable();
-                    this.on('all', function (eventName) {
-                        _this.tracker.notifySubscribers(null);
-                    });
-                }
+        Collection.prototype.getTracker = function () {
+            var _this = this;
+            if (!this._tracker) {
+                this._tracker = ko.observable();
+                this.on('all', function (eventName) {
+                    _this._tracker.notifySubscribers(null);
+                });
+            }
 
-                return this._tracker;
-            },
-            enumerable: true,
-            configurable: true
-        });
+            return this._tracker;
+        };
 
         Collection.prototype.observable = function () {
             if (!this._observable)
@@ -804,7 +801,7 @@ var Knockbone;
             return this.ajax('put', url, data, options);
         };
 
-        Service.prototype.delete = function (url, data, options) {
+        Service.prototype._delete = function (url, data, options) {
             if ((options && options.processData) !== false)
                 data = JSON.stringify(data);
 
@@ -852,6 +849,8 @@ var Knockbone;
         return Service;
     })();
     Knockbone.Service = Service;
+
+    Service.prototype['delete'] = Service.prototype._delete;
 
     Service.prototype.ajaxSettings = {
         contentType: "application/json; charset=utf-8",
